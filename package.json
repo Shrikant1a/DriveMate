@@ -1,0 +1,17 @@
+{
+  "name": "driverondemand",
+  "version": "1.0.0",
+  "private": true,
+  "description": "DriverOnDemand - Premium On-Demand Personal Driver Booking Platform",
+  "scripts": {
+    "dev": "concurrently \"pnpm --filter driverondemand-server dev\" \"pnpm --filter driverondemand-client dev\"",
+    "dev:server": "pnpm --filter driverondemand-server dev",
+    "dev:client": "pnpm --filter driverondemand-client dev",
+    "build": "pnpm --filter driverondemand-client build && pnpm --filter driverondemand-server build",
+    "test": "pnpm --filter driverondemand-server test",
+    "seed": "pnpm --filter driverondemand-server seed"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
