@@ -60,8 +60,8 @@ export const ArchitecturalEnvironment: React.FC = () => {
         </mesh>
 
         {/* Canopy Warm Under-Soffit Lighting Strips */}
-        <mesh position={[0, -0.31, 0]}>
-          <planeGeometry args={[12, 9]} rotation={[Math.PI / 2, 0, 0]} />
+        <mesh position={[0, -0.31, 0]} rotation={[Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[12, 9]} />
           <meshStandardMaterial color="#FFF1DB" emissive="#FFE2B8" emissiveIntensity={0.6} roughness={0.2} />
         </mesh>
       </group>
