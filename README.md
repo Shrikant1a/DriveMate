@@ -1,7 +1,8 @@
 # DriveMate
 
 > **Your Car. Your Driver. Your Journey.**  
-> *Built by shriTech Pvt Ltd*
+> *Built by shriTech Pvt Ltd*  
+> 🌐 **Live Website**: [https://drivesmate.netlify.app/](https://drivesmate.netlify.app/)
 
 DriveMate is a premium, futuristic on-demand personal driver booking platform. Customers already own vehicles but require a vetted professional chauffeur to drive them — for business appointments, airport transfers, weddings, nightlife parties, or interstate highway road trips.
 
@@ -119,9 +120,10 @@ pnpm --filter driverondemand-server test
 npm run dev
 ```
 
-* Frontend Application: `http://localhost:3000`
-* Backend API & WebSockets: `http://localhost:5000`
-* Health Check: `http://localhost:5000/api/health`
+* **Live Production Website**: [https://drivesmate.netlify.app/](https://drivesmate.netlify.app/)
+* **Frontend Application**: `http://localhost:3000`
+* **Backend API & WebSockets**: `http://localhost:5000`
+* **Health Check**: `http://localhost:5000/api/health`
 
 ---
 
