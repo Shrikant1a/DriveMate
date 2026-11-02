@@ -1,4 +1,8 @@
-const API_BASE = '/api';
+import { handleMockRequest } from './mockBackend.js';
+
+const API_BASE = (import.meta.env.VITE_API_URL 
+  ? `${import.meta.env.VITE_API_URL.replace(/\/$/, '')}/api`
+  : '/api');
 
 export function getAuthToken(): string | null {
   return localStorage.getItem('dod_token');
@@ -24,18 +28,38 @@ async function request<T = any>(endpoint: string, options: RequestInit = {}): Pr
     headers['Authorization'] = `Bearer ${token}`;
   }
 
-  const response = await fetch(`${API_BASE}${endpoint}`, {
-    ...options,
-    headers,
-  });
+  try {
+    const response = await fetch(`${API_BASE}${endpoint}`, {
+      ...options,
+      headers,
+    });
 
-  const data = await response.json().catch(() => ({}));
+    // If endpoint is not found (static hosts like Netlify with no backend server), fallback to demo engine
+    if (response.status === 404 || response.status === 502 || response.status === 503) {
+      return await handleMockRequest<T>(endpoint, options);
+    }
 
-  if (!response.ok) {
-    throw new Error(data.error || `Request failed with status ${response.status}`);
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(data.error || `Request failed with status ${response.status}`);
+    }
+
+    return data;
+  } catch (err: any) {
+    // If it's a fetch network error (e.g. backend offline or refused connection)
+    if (
+      err.name === 'TypeError' ||
+      err.message?.includes('Failed to fetch') ||
+      err.message?.includes('NetworkError') ||
+      err.message?.includes('Load failed')
+    ) {
+      return await handleMockRequest<T>(endpoint, options);
+    }
+
+    // Otherwise, it was an explicit server validation error (e.g. 400 Bad Request) from a running backend
+    throw err;
   }
-
-  return data;
 }
 
 export const api = {
@@ -99,4 +123,3 @@ export const api = {
   createPaymentOrder: (bookingId: number) => request('/payments/order', { method: 'POST', body: JSON.stringify({ bookingId }) }),
   verifyPayment: (data: any) => request('/payments/verify', { method: 'POST', body: JSON.stringify(data) }),
 };
-

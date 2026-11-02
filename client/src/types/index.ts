@@ -12,6 +12,7 @@ export interface User {
   ratingAvg?: number;
   ratingCount?: number;
   experienceYears?: number;
+  serviceArea?: string;
   bio?: string;
   address?: string;
   emergencyContactName?: string;

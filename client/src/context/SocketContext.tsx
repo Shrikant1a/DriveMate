@@ -15,9 +15,23 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const { user } = useAuth();
 
   useEffect(() => {
-    const s = io('/', {
+    // If hosted on Netlify without custom backend URL, skip socket connection to avoid 404 noise
+    const isNetlifyWithoutBackend = 
+      typeof window !== 'undefined' && 
+      window.location.hostname.includes('netlify.app') && 
+      !import.meta.env.VITE_API_URL;
+
+    if (isNetlifyWithoutBackend) {
+      return;
+    }
+
+    const socketUrl = import.meta.env.VITE_API_URL || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:5000' : '/');
+
+    const s = io(socketUrl, {
       transports: ['websocket', 'polling'],
       autoConnect: true,
+      reconnectionAttempts: 3,
+      timeout: 5000,
     });
 
     s.on('connect', () => {
@@ -52,4 +66,3 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 export function useSocket() {
   return useContext(SocketContext);
 }
-
