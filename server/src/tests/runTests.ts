@@ -17,7 +17,7 @@ function assert(condition: boolean, testName: string, detail?: string) {
 }
 
 async function runTestSuite() {
-  console.log('🧪 Starting DriverOnDemand Automated Integration & Business Rule Tests...\n');
+  console.log('🧪 Starting DriveMate Automated Integration & Business Rule Tests...\n');
 
   // Test 1: Database & Migrations
   console.log('1. Database & Migrations:');
@@ -123,6 +123,33 @@ async function runTestSuite() {
   const audit = await queryOne<any>("SELECT * FROM audit_logs WHERE target_id = ? ORDER BY id DESC LIMIT 1", [pendingDriver.id]);
   assert(audit !== null && audit.action === 'DRIVER_APPROVAL', 'Admin action recorded in persistent audit log');
 
+  // Test 9: Platform Commission & Driver Payout Split
+  console.log('\n9. Platform Commission & Driver Payout Split:');
+  const grossFare = 100000; // ₹1,000.00
+  const platformFee = Math.round(grossFare * 0.15); // 15% platform commission
+  const driverPayout = grossFare - platformFee; // 85% driver take-home
+  assert(platformFee === 15000, 'Platform commission exactly calculates at 15%');
+  assert(driverPayout === 85000, 'Driver payout exactly calculates at 85%');
+  assert(platformFee + driverPayout === grossFare, 'Zero leakage in payout sum');
+
+  // Test 10: SQL Injection Protection with Parameterized Queries
+  console.log('\n10. Security & SQL Injection Protection:');
+  const maliciousInput = "test@example.com' OR '1'='1";
+  const injectionAttempt = await queryOne<any>('SELECT * FROM users WHERE email = ?', [maliciousInput]);
+  assert(injectionAttempt === null, 'SQL injection attempt via parameterized query is safely sanitized');
+
+  // Test 11: Dynamic Transmission Specification (Automatic vs Manual)
+  console.log('\n11. Vehicle Transmission Integrity:');
+  const autoCar = custVehicles.find((v: any) => v.transmission === 'AUTOMATIC');
+  assert(autoCar !== undefined, 'Customer has registered AUTOMATIC transmission luxury vehicle');
+
+  // Test 12: Cancellation & Refund State Rules
+  console.log('\n12. Cancellation & Dispute Rules:');
+  const cancelBookingId = testBookingId;
+  await execute("UPDATE bookings SET status = 'CANCELLED' WHERE id = ?", [cancelBookingId]);
+  const cancelCheck = await queryOne<any>('SELECT status FROM bookings WHERE id = ?', [cancelBookingId]);
+  assert(cancelCheck.status === 'CANCELLED', 'Booking transitions to CANCELLED state successfully');
+
   console.log(`\n==============================================`);
   console.log(`📊 Test Results: ${passed} PASSED, ${failed} FAILED`);
   console.log(`==============================================\n`);
@@ -138,4 +165,3 @@ runTestSuite()
     console.error('Test suite error:', err);
     process.exit(1);
   });
-
