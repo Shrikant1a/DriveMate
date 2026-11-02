@@ -110,9 +110,12 @@ pnpm install
 
 ### 2. Run Automated Integration Tests
 ```bash
-pnpm --filter driverondemand-server test
+pnpm test
 ```
-*Validates 18 business rules: database migrations, bcrypt password security, customer car ownership, driver approval enforcement, server-side integer paise calculation, booking lifecycle transitions, and review constraints.*
+*Validates 24 core business rules: database migrations, bcrypt password security, customer car ownership, driver approval enforcement, server-side integer paise calculation, booking lifecycle transitions, review constraints, 15%/85% commission split, SQL injection protection, and transmission validation.*
+
+* **Test Case Directory**: [TEST_CASES.md](file:///s:/Drivemate/TEST_CASES.md) (50 Structured Test Cases)
+* **Comprehensive QA Manual**: [docs/TESTING_AND_QA_DOCUMENTATION.md](file:///s:/Drivemate/docs/TESTING_AND_QA_DOCUMENTATION.md) (Test Strategy, Traceability Matrix, Architecture)
 
 ### 3. Start Development Server
 ```bash
